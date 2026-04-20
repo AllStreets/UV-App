@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Solace · UV Live · Charleston, SC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200..700;1,9..144,200..700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>/* ======================================================
+   SOLACE UV — Modern Design System v2
+   Palette: warm sand neutrals + vivid UV accent scale
+   ====================================================== */
+
+/* ---- TOKENS ---- */
+:root {
+  --sand-50:  #fdf8f2;
+  --sand-100: #f8eed9;
+  --sand-200: #f0ddb8;
+  --sand-300: #e3c490;
+  --sand-400: #c9a06a;
+  --sand-500: #a07848;
+  --sand-600: #7a5430;
+  --sand-800: #3a2010;
+
+  --ink:      #1a1208;
+  --ink-2:    #5a3e28;
+  --ink-3:    #9a7a5a;
+  --ink-4:    #c4aa8a;
+
+  --line:     rgba(26, 18, 8, 0.10);
+  --line-2:   rgba(26, 18, 8, 0.05);
+
+  --surface:  #ffffff;
+  --surface-2: rgba(255,255,255,0.7);
+  --surface-3: rgba(255,255,255,0.4);
+
+  --accent:   #d94f2a;
+  --accent-2: #f5a321;
+  --accent-3: #e8765a;
+
+  /* UV scale */
+  --uv-min:    #4cb8a4;
+  --uv-low:    #86c55e;
+  --uv-mod:    #e4c53e;
+  --uv-high:   #f08030;
+  --uv-vhigh:  #e04040;
+  --uv-ext:    #8e32a8;
+
+  --radius-sm: 10px;
+  --radius:    16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow:    0 4px 16px -2px rgba(0,0,0,0.08), 0 2px 6px -1px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px -8px rgba(0,0,0,0.12), 0 4px 12px -2px rgba(0,0,0,0.05);
+}
+
+[data-theme="dusk"] {
+  --sand-50:  #0d1520;
+  --sand-100: #121e30;
+  --sand-200: #192840;
+  --ink:      #f0e8d5;
+  --ink-2:    #bda880;
+  --ink-3:    #7a6848;
+  --ink-4:    #4a3828;
+  --line:     rgba(240, 232, 213, 0.12);
+  --line-2:   rgba(240, 232, 213, 0.05);
+  --surface:  rgba(255,252,245,0.06);
+  --surface-2: rgba(255,252,245,0.04);
+  --surface-3: rgba(255,252,245,0.02);
+  --accent:   #f5a321;
+  --accent-2: #ff7055;
+}
+
+[data-theme="dawn"] {
+  --sand-50:  #fff0ea;
+  --sand-100: #fdd8cc;
+  --sand-200: #f9b8bc;
+  --ink:      #380c28;
+  --ink-2:    #6a2848;
+  --ink-3:    #9a5878;
+  --ink-4:    #c888a8;
+  --accent:   #c0306a;
+  --accent-2: #f5a321;
+}
+
+[data-theme="mono"] {
+  --sand-50:  #f5f4f0;
+  --sand-100: #eeece6;
+  --sand-200: #e2dfd5;
+  --ink:      #0a0a0a;
+  --ink-2:    #383838;
+  --ink-3:    #787878;
+  --ink-4:    #b8b8b8;
+  --line:     rgba(0,0,0,0.10);
+  --line-2:   rgba(0,0,0,0.05);
+  --accent:   #e03018;
+  --accent-2: #0a0a0a;
+  --surface:  rgba(255,255,255,0.8);
+}
+
+/* ---- RESET ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--sand-50);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ---- TYPOGRAPHY ---- */
+.serif  { font-family: 'Fraunces', 'Times New Roman', serif; }
+.mono   { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+.label  { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-3); }
+
+/* ---- AMBIENT BACKGROUND ---- */
+.sky {
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(circle at 70% 0%, var(--sand-200) 0%, transparent 50%),
+    radial-gradient(circle at 10% 100%, var(--sand-100) 0%, transparent 60%),
+    var(--sand-50);
+  transition: background 0.7s ease;
+}
+.sky::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+  opacity: 0.07; mix-blend-mode: multiply; pointer-events: none;
+}
+[data-theme="dusk"] .sky::after { mix-blend-mode: screen; opacity: 0.10; }
+
+.sun-halo {
+  position: fixed; z-index: -1;
+  width: 70vw; height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-2) 0%, transparent 65%);
+  opacity: 0.10; filter: blur(60px);
+  pointer-events: none;
+  animation: floatHalo 24s ease-in-out infinite;
+}
+@keyframes floatHalo {
+  0%, 100% { transform: translate(5vw, -10vh) scale(1); }
+  50%       { transform: translate(25vw, 10vh) scale(1.15); }
+}
+
+/* ---- ANIMATIONS ---- */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.92; }
+  50%       { transform: scale(1.035); opacity: 1; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulseRing {
+  0%   { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+@keyframes blip {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.4); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.breathe      { animation: breathe 7s ease-in-out infinite; transform-origin: center; }
+.spin-slow    { animation: spin 120s linear infinite; transform-origin: center; transform-box: fill-box; }
+.spin-slower  { animation: spin 240s linear infinite reverse; transform-origin: center; transform-box: fill-box; }
+.pulse-ring   { animation: pulseRing 4s ease-out infinite; transform-origin: center; transform-box: fill-box; }
+.fade-up      { animation: fadeUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ---- APP SHELL ---- */
+.app {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* ---- STICKY HEADER ---- */
+.sticky-bar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0;
+  background: transparent;
+  backdrop-filter: none;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+.sticky-bar.scrolled {
+  background: rgba(253,248,242,0.88);
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-bottom: 1px solid var(--line);
+}
+[data-theme="dusk"] .sticky-bar.scrolled {
+  background: rgba(13,21,32,0.88);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark { width: 34px; height: 34px; }
+.brand-text h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 20px; font-weight: 500;
+  letter-spacing: -0.025em; line-height: 1;
+}
+.brand-text .sub { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); margin-top: 3px; }
+
+.header-right { display: flex; align-items: center; gap: 20px; }
+.live-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  font-size: 12px; color: var(--ink-2);
+  box-shadow: var(--shadow-sm);
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #4db86a; animation: blip 2s ease-in-out infinite; }
+.location-text { text-align: right; }
+.location-text .city { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 400; letter-spacing: -0.01em; }
+.location-text .coords { font-size: 10px; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace; color: var(--ink-3); margin-top: 2px; }
+
+/* ---- HERO ---- */
+.hero {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 28px 0 20px;
+}
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow .sep { opacity: 0.3; }
+.hero-tagline {
+  font-family: 'Fraunces', serif;
+  font-size: 42px; font-weight: 300;
+  letter-spacing: -0.03em; line-height: 1.05;
+  text-align: center; margin-bottom: 28px;
+  font-style: italic;
+  max-width: 680px;
+}
+.hero-tagline strong { font-style: normal; font-weight: 600; }
+
+.hero-hint {
+  margin-top: 20px;
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.hero-hint .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blip 2.5s ease-in-out infinite; }
+
+/* ---- WHEEL ---- */
+.wheel-wrap {
+  position: relative;
+  width: 640px; max-width: 94vw;
+  aspect-ratio: 1;
+}
+.wheel-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.wheel-readout {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  pointer-events: none; text-align: center;
+  padding: 20px;
+}
+.wheel-readout .label-top {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+  margin-bottom: 6px; font-weight: 600;
+}
+.wheel-readout .uv-num {
+  font-family: 'Fraunces', serif;
+  font-weight: 300; font-size: 168px;
+  line-height: 0.85; letter-spacing: -0.04em;
+  display: flex; align-items: baseline;
+}
+.wheel-readout .decimal { font-size: 70px; color: var(--ink-3); margin-left: 2px; }
+.wheel-readout .time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.14em; color: var(--ink-3); margin-top: 12px;
+}
+
+/* ---- LEGEND BAR ---- */
+.legend {
+  display: flex; gap: 0;
+  width: 100%; max-width: 640px;
+  border-radius: 100px; overflow: hidden;
+  height: 6px;
+}
+.legend-seg { flex: 1; height: 100%; }
+.legend-labels {
+  display: flex; justify-content: space-between;
+  width: 100%; max-width: 640px;
+  margin-top: 5px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.1em; color: var(--ink-3); text-transform: uppercase;
+}
+
+/* ---- ENVIRONMENT SELECTOR ---- */
+.env-section {
+  width: 100%; max-width: 900px;
+  margin: 24px auto 0;
+}
+.env-section-label {
+  text-align: center; margin-bottom: 14px;
+}
+.env-pills {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+}
+.env-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  border-radius: 100px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+}
+.env-pill:hover { border-color: var(--ink-2); transform: translateY(-1px); box-shadow: var(--shadow); }
+.env-pill.active { background: var(--ink); color: var(--sand-50); border-color: var(--ink); box-shadow: var(--shadow); }
+.env-pill .pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; opacity: 0.65; margin-left: 3px; letter-spacing: 0.04em;
+}
+
+/* ---- RETURN TO NOW BUTTON ---- */
+.return-now {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  border: 1.5px solid var(--ink); border-radius: 100px;
+  background: transparent; color: var(--ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.18s ease;
+}
+.return-now:hover { background: var(--ink); color: var(--sand-50); }
+
+/* ---- DIVIDER ---- */
+.section-divider {
+  width: 100%; height: 1px;
+  background: var(--line); margin: 40px 0 32px;
+}
+.section-label {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px;
+}
+.section-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--line);
+}
+
+/* ---- FEATURE GRID ---- */
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.grid-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; margin-top: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px; }
+
+@media (max-width: 1100px) {
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 720px) {
+  .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+  .app { padding: 0 16px 60px; }
+  .hourly-secondary, .hourly-insights { grid-template-columns: 1fr; }
+}
+
+/* ---- CARD ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s ease;
+}
+.card:hover { box-shadow: var(--shadow-lg); }
+[data-theme="dusk"] .card {
+  background: rgba(255,252,245,0.05);
+  border-color: rgba(255,252,245,0.1);
+}
+
+.card-label {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 16px;
+}
+.card-label-right { margin-left: auto; }
+
+/* ---- STAT ROWS ---- */
+.stat-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 10px 0; border-bottom: 1px solid var(--line-2);
+}
+.stat-row:last-child { border-bottom: none; padding-bottom: 0; }
+.stat-row .k { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-2); }
+.stat-row .v { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 400; letter-spacing: -0.01em; }
+.stat-row .unit { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-3); margin-left: 4px; }
+
+/* ---- BIG STAT (hero numbers in small cards) ---- */
+.big-stat { display: flex; flex-direction: column; height: 100%; }
+.big-stat .num {
+  font-family: 'Fraunces', serif;
+  font-size: 72px; font-weight: 300;
+  letter-spacing: -0.04em; line-height: 1;
+  margin-top: 8px; margin-bottom: 4px;
+}
+.big-stat .num .unit-sm {
+  font-size: 28px; color: var(--ink-3); font-weight: 300;
+  margin-left: 4px; letter-spacing: 0;
+}
+.big-stat .sub-note { font-size: 13px; color: var(--ink-3); margin-top: 4px; }
+
+/* ---- SKIN SELECTOR ---- */
+.skin-types {
+  display: flex; gap: 6px; margin-top: 6px;
+}
+.skin-type {
+  flex: 1; border: none; border-radius: var(--radius-sm);
+  padding: 10px 4px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  transition: all 0.18s ease;
+  background: var(--sand-100);
+}
+.skin-type:hover { transform: translateY(-2px); }
+.skin-type.active { outline: 2px solid var(--ink); outline-offset: 1px; }
+.skin-type .swatch {
+  width: 28px; height: 28px; border-radius: 50%;
+}
+.skin-type .st-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.06em; color: var(--ink-2);
+}
+[data-theme="dusk"] .skin-type { background: rgba(255,252,245,0.06); }
+
+/* ---- BURN TIMER ---- */
+.burn-timer {
+  display: flex; flex-direction: column; align-items: center;
+  margin-top: 16px; padding: 20px;
+  background: var(--sand-100); border-radius: var(--radius);
+  text-align: center; position: relative; overflow: hidden;
+}
+[data-theme="dusk"] .burn-timer { background: rgba(255,252,245,0.05); }
+.burn-timer .timer-num {
+  font-family: 'Fraunces', serif;
+  font-size: 52px; font-weight: 300;
+  letter-spacing: -0.04em; line-height: 1;
+}
+.burn-timer .timer-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--ink-3); margin-top: 6px;
+}
+.burn-timer .timer-bar {
+  width: 100%; height: 4px; border-radius: 100px;
+  background: var(--sand-200); margin-top: 14px; overflow: hidden;
+}
+.burn-timer .timer-fill {
+  height: 100%; border-radius: 100px;
+  transition: width 0.6s ease, background 0.6s ease;
+}
+
+/* ---- TIME BLOCKS (best windows) ---- */
+.time-block {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 13px 0; border-bottom: 1px solid var(--line-2);
+}
+.time-block:last-child { border-bottom: none; padding-bottom: 0; }
+.time-block .left { display: flex; align-items: center; gap: 12px; }
+.time-block .pip { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.time-block .t-name { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 400; letter-spacing: -0.01em; }
+.time-block .t-desc { font-size: 12px; color: var(--ink-3); margin-top: 1px; }
+.time-block .t-when { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.04em; }
+
+/* ---- HOURLY STRIP ---- */
+.hourly { display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; margin-top: 6px; }
+.hourly-bar {
+  position: relative; height: 72px; border-radius: 5px;
+  display: flex; align-items: flex-end; overflow: hidden;
+  background: var(--sand-100); cursor: pointer;
+  transition: transform 0.15s ease;
+}
+[data-theme="dusk"] .hourly-bar { background: rgba(255,252,245,0.05); }
+.hourly-bar:hover { transform: scaleY(1.08); }
+.hourly-bar .fill { width: 100%; border-radius: 4px; transition: height 0.5s cubic-bezier(0.22,1,0.36,1); }
+.hourly-bar.now { outline: 2px solid var(--ink); outline-offset: 1px; border-radius: 5px; }
+.hourly-axis {
+  display: flex; justify-content: space-between; margin-top: 7px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: 0.08em; color: var(--ink-3);
+}
+.hourly-secondary {
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+  align-items: stretch;
+  gap: 18px; margin-top: 20px; padding-top: 18px;
+  min-height: 300px;
+  border-top: 1px solid var(--line-2);
+}
+.mini-trend {
+  display: flex; flex-direction: column; min-height: 100%;
+}
+.mini-trend-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+}
+.mini-trend-title,
+.insight-k {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3);
+}
+.mini-trend-meta {
+  font-size: 12px; color: var(--ink-3);
+}
+.cloud-hourly {
+  display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px;
+  align-items: end; flex: 1; min-height: 170px; margin-top: 16px;
+}
+.cloud-bar-shell {
+  height: 100%; border-radius: 5px;
+  display: flex; align-items: flex-end; overflow: hidden;
+  background: rgba(169, 154, 133, 0.10);
+}
+.cloud-bar-fill {
+  width: 100%; border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, rgba(140, 126, 108, 0.82), rgba(196, 181, 164, 0.5));
+  transition: height 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease;
+}
+.cloud-bar-shell.now {
+  outline: 2px solid rgba(90, 62, 40, 0.78);
+  outline-offset: 1px;
+}
+.mini-axis { margin-top: 8px; }
+.hourly-insights {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+  min-height: 100%;
+  grid-auto-rows: 1fr;
+}
+.insight-card {
+  min-height: 100%;
+  padding: 18px 18px 16px;
+  background: var(--sand-100);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.insight-v {
+  margin-top: 10px;
+  font-size: clamp(30px, 2vw, 38px);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.insight-sub {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+[data-theme="dusk"] .cloud-bar-shell { background: rgba(255,252,245,0.06); }
+[data-theme="dusk"] .cloud-bar-fill {
+  background: linear-gradient(180deg, rgba(189, 168, 128, 0.75), rgba(122, 104, 72, 0.45));
+}
+[data-theme="dusk"] .insight-card {
+  background: rgba(255,252,245,0.05);
+}
+
+/* ---- SUN ARC ---- */
+.sun-arc { position: relative; height: 110px; margin-top: 8px; }
+.sun-arc svg { width: 100%; height: 100%; overflow: visible; }
+
+/* ---- WEEK GRID ---- */
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+.day {
+  text-align: center; padding: 12px 6px; border-radius: var(--radius-sm);
+  background: var(--sand-100); transition: transform 0.18s ease;
+}
+[data-theme="dusk"] .day { background: rgba(255,252,245,0.05); }
+.day:hover { transform: translateY(-2px); }
+.day .dow { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.12em; color: var(--ink-3); text-transform: uppercase; }
+.day .dot { width: 32px; height: 32px; border-radius: 50%; margin: 8px auto 6px; }
+.day .peak { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 400; letter-spacing: -0.02em; }
+
+/* ---- ADVISORY BANNER ---- */
+.advisory-banner {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-top: 20px;
+  color: white;
+}
+.adv-icon { flex-shrink: 0; margin-top: 2px; }
+.adv-head { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; letter-spacing: -0.01em; line-height: 1.3; }
+.adv-sub  { font-size: 13px; opacity: 0.85; margin-top: 5px; line-height: 1.4; }
+
+/* ---- SMART TIP CARD ---- */
+.tip-card {
+  background: var(--ink);
+  color: var(--sand-50);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+.tip-card .tip-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.5; margin-bottom: 10px; }
+.tip-card .tip-text { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 300; font-style: italic; line-height: 1.4; letter-spacing: -0.01em; }
+
+/* ---- PROGRESS RING (UV score) ---- */
+.score-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 0; }
+.score-ring { position: relative; width: 120px; height: 120px; margin: 0 auto 12px; }
+.score-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.score-ring .score-num {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transform: none;
+}
+.score-ring .score-num .n { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 300; letter-spacing: -0.03em; line-height: 1; }
+.score-ring .score-num .of { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: var(--ink-3); margin-top: 3px; }
+.score-label { font-family: 'Fraunces', serif; font-size: 16px; font-style: italic; color: var(--ink-2); }
+.score-desc { font-size: 12px; color: var(--ink-3); text-align: center; margin-top: 4px; max-width: 180px; }
+
+/* ---- STATUS ---- */
+.status { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ---- TWEAKS ---- */
+.tweaks {
+  position: fixed; right: 20px; bottom: 20px; width: 280px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-lg);
+  display: none; z-index: 1000;
+}
+.tweaks.visible { display: block; }
+.tweaks h3 { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 16px; color: var(--ink-2); }
+.tweak-row { margin-bottom: 14px; }
+.tweak-row label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.14em; color: var(--ink-3); text-transform: uppercase; margin-bottom: 6px; }
+.tweak-row input[type="range"] { width: 100%; accent-color: var(--accent); }
+.seg { display: flex; gap: 3px; background: var(--sand-100); border-radius: var(--radius-sm); padding: 3px; }
+.seg button {
+  flex: 1; border: none; background: transparent;
+  padding: 7px 4px; border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3); cursor: pointer; transition: all 0.15s ease;
+}
+.seg button.active { background: var(--ink); color: var(--sand-50); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel">// Custom thin-line SVG icons (1.5px stroke)
+const Icon = ({ children, size = 16, stroke = "currentColor", fill = "none" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    {children}
+  </svg>
+);
+
+const IconSun = (p) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+  </Icon>
+);
+
+const IconShield = (p) => (
+  <Icon {...p}>
+    <path d="M12 2l8 3v7c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V5l8-3z" />
+  </Icon>
+);
+
+const IconDrop = (p) => (
+  <Icon {...p}>
+    <path d="M12 2.5s-6 7-6 11.5a6 6 0 0012 0c0-4.5-6-11.5-6-11.5z" />
+  </Icon>
+);
+
+const IconClock = (p) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </Icon>
+);
+
+const IconWind = (p) => (
+  <Icon {...p}>
+    <path d="M3 8h12a3 3 0 100-6M3 12h18M3 16h15a3 3 0 110 6" />
+  </Icon>
+);
+
+const IconSunrise = (p) => (
+  <Icon {...p}>
+    <path d="M17 18a5 5 0 00-10 0M12 2v7M4.22 10.22l1.42 1.42M18.36 11.64l1.42-1.42M2 18h2M20 18h2M22 22H2M8 6l4-4 4 4" />
+  </Icon>
+);
+
+const IconSunset = (p) => (
+  <Icon {...p}>
+    <path d="M17 18a5 5 0 00-10 0M12 9V2M4.22 10.22l1.42 1.42M18.36 11.64l1.42-1.42M2 18h2M20 18h2M22 22H2M16 5l-4 4-4-4" />
+  </Icon>
+);
+
+const IconCloud = (p) => (
+  <Icon {...p}>
+    <path d="M6 18a4 4 0 01-.88-7.9A6 6 0 0118 10a4 4 0 01-2 7.5H6z" />
+  </Icon>
+);
+
+const IconWave = (p) => (
+  <Icon {...p}>
+    <path d="M2 12s2-3 5-3 5 3 8 3 5-3 5-3M2 18s2-3 5-3 5 3 8 3 5-3 5-3" />
+  </Icon>
+);
+
+const IconAlert = (p) => (
+  <Icon {...p}>
+    <path d="M12 3l10 18H2L12 3z" />
+    <path d="M12 10v5M12 18h.01" />
+  </Icon>
+);
+
+const IconPin = (p) => (
+  <Icon {...p}>
+    <path d="M12 2a7 7 0 017 7c0 5-7 13-7 13S5 14 5 9a7 7 0 017-7z" />
+    <circle cx="12" cy="9" r="2.5" />
+  </Icon>
+);
+
+const IconLeaf = (p) => (
+  <Icon {...p}>
+    <path d="M3 21s0-9 9-13c5-2 9 0 9 0s-2 11-10 13c-5 1-8 0-8 0z" />
+    <path d="M3 21c3-5 6-7 10-9" />
+  </Icon>
+);
+
+const IconSparkle = (p) => (
+  <Icon {...p}>
+    <path d="M12 3l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" />
+  </Icon>
+);
+
+const IconEye = (p) => (
+  <Icon {...p}>
+    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" />
+    <circle cx="12" cy="12" r="3" />
+  </Icon>
+);
+
+Object.assign(window, {
+  Icon, IconSun, IconShield, IconDrop, IconClock, IconWind,
+  IconSunrise, IconSunset, IconCloud, IconWave, IconAlert, IconPin,
+  IconLeaf, IconSparkle, IconEye
+});
+</script>
+<script type="text/babel">// Open-Meteo data layer with realistic fallback for Charleston, SC
+// Charleston coords: 32.7765° N, 79.9311° W
+
+const CHARLESTON = { lat: 32.7765, lon: -79.9311 };
+const FORECAST_DAYS = 14;
+
+// Map UV -> color + level
+function uvColor(uv) {
+  if (uv < 1) return { c: '#4fb8a8', level: 'Minimal',    idx: 0 };
+  if (uv < 3) return { c: '#8fc96a', level: 'Low',        idx: 1 };
+  if (uv < 6) return { c: '#e6c94a', level: 'Moderate',   idx: 2 };
+  if (uv < 8) return { c: '#f08a3a', level: 'High',       idx: 3 };
+  if (uv < 11) return { c: '#e64b3c', level: 'Very High', idx: 4 };
+  return { c: '#8e3aa8', level: 'Extreme', idx: 5 };
+}
+
+function uvInterpColor(uv) {
+  // Smooth gradient color
+  const stops = [
+    [0, [79, 184, 168]],
+    [1, [143, 201, 106]],
+    [3, [230, 201, 74]],
+    [6, [240, 138, 58]],
+    [8, [230, 75, 60]],
+    [11, [142, 58, 168]],
+    [13, [90, 30, 130]]
+  ];
+  if (uv <= 0) return `rgb(${stops[0][1].join(',')})`;
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [u0, c0] = stops[i], [u1, c1] = stops[i+1];
+    if (uv >= u0 && uv <= u1) {
+      const t = (uv - u0) / (u1 - u0);
+      const r = Math.round(c0[0] + (c1[0] - c0[0]) * t);
+      const g = Math.round(c0[1] + (c1[1] - c0[1]) * t);
+      const b = Math.round(c0[2] + (c1[2] - c0[2]) * t);
+      return `rgb(${r},${g},${b})`;
+    }
+  }
+  return `rgb(${stops[stops.length-1][1].join(',')})`;
+}
+
+// Realistic simulated 24h UV for Charleston in late spring
+function simulated24h() {
+  // Bell curve peaking at solar noon (~13:15 EDT) with peak ~9.5
+  const peak = 9.2;
+  const noon = 13.2;
+  const sunrise = 6.5;
+  const sunset = 19.75;
+  const arr = [];
+  for (let h = 0; h < 24; h++) {
+    if (h < sunrise || h > sunset) {
+      arr.push(0);
+      continue;
+    }
+    // Cosine-shaped window between sunrise and sunset
+    const phase = (h - noon) / (sunset - sunrise) * Math.PI;
+    const v = peak * Math.pow(Math.cos(phase), 2.2);
+    arr.push(Math.max(0, v));
+  }
+  return arr.map(v => Math.round(v * 10) / 10);
+}
+
+function simulatedOutlook(days = FORECAST_DAYS) {
+  const baseline = [8.5, 9.1, 9.4, 8.8, 7.2, 9.6, 9.9];
+  return Array.from({ length: days }, (_, i) => {
+    const base = baseline[i % baseline.length];
+    const drift = Math.sin(i * 0.65) * 0.45 + (i >= 7 ? -0.2 : 0);
+    return Math.max(0, Math.round((base + drift) * 10) / 10);
+  });
+}
+
+async function fetchUVData() {
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${CHARLESTON.lat}&longitude=${CHARLESTON.lon}&hourly=uv_index,cloud_cover&daily=uv_index_max,sunrise,sunset&timezone=America%2FNew_York&forecast_days=${FORECAST_DAYS}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('API failed');
+    const json = await res.json();
+
+    const now = new Date();
+    const nowStr = now.toISOString().slice(0, 13); // YYYY-MM-DDTHH
+    const times = json.hourly.time;
+    const uvs = json.hourly.uv_index;
+    const clouds = json.hourly.cloud_cover;
+
+    // Find index matching current hour
+    const nowIdx = times.findIndex(t => t.startsWith(nowStr));
+    const today = nowIdx >= 0 ? Math.floor(nowIdx / 24) * 24 : 0;
+    const hourly = uvs.slice(today, today + 24).map(v => Math.max(0, Math.round(v * 10) / 10));
+    const cloudToday = clouds.slice(today, today + 24);
+
+    // Sun times
+    const sunrise = json.daily.sunrise[0];
+    const sunset = json.daily.sunset[0];
+
+    return {
+      live: true,
+      hourly,
+      cloud: cloudToday,
+      currentIdx: nowIdx >= 0 ? nowIdx - today : now.getHours(),
+      sunrise: new Date(sunrise),
+      sunset: new Date(sunset),
+      week: json.daily.uv_index_max.slice(0, FORECAST_DAYS).map(v => Math.round(v * 10) / 10),
+      weekDates: json.daily.sunrise.map(s => new Date(s)),
+    };
+  } catch (e) {
+    console.warn('Using simulated data:', e.message);
+    const hourly = simulated24h();
+    const now = new Date();
+    const today0 = new Date(now);
+    today0.setHours(0, 0, 0, 0);
+    return {
+      live: false,
+      hourly,
+      cloud: hourly.map((_, h) => Math.round(20 + 30 * Math.sin(h / 3))),
+      currentIdx: now.getHours() + now.getMinutes() / 60,
+      sunrise: new Date(today0.getTime() + 6.5 * 3600 * 1000),
+      sunset: new Date(today0.getTime() + 19.75 * 3600 * 1000),
+      week: simulatedOutlook(),
+      weekDates: Array.from({length: FORECAST_DAYS}, (_, i) => {
+        const d = new Date(today0); d.setDate(d.getDate() + i); return d;
+      }),
+    };
+  }
+}
+
+function formatTime(date) {
+  return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+function findBestTimes(hourly, sunrise, sunset) {
+  // Vitamin D window: UV 3-7, any time
+  // Safe tan: UV 3-5 only
+  // Burn zone: UV 8+
+  const vitdStart = hourly.findIndex(v => v >= 3);
+  const vitdEnd = hourly.length - 1 - [...hourly].reverse().findIndex(v => v >= 3);
+  const safeTan = hourly.map((v, i) => ({ v, i })).filter(x => x.v >= 3 && x.v < 6);
+  const burnStart = hourly.findIndex(v => v >= 8);
+  const burnEnd = hourly.length - 1 - [...hourly].reverse().findIndex(v => v >= 8);
+  const peakIdx = hourly.indexOf(Math.max(...hourly));
+
+  const hToTime = h => {
+    const suffix = h >= 12 ? 'PM' : 'AM';
+    const hh = h === 0 ? 12 : (h > 12 ? h - 12 : h);
+    return `${hh}:00 ${suffix}`;
+  };
+
+  return {
+    vitaminD: vitdStart >= 0 ? `${hToTime(vitdStart)} – ${hToTime(vitdEnd + 1)}` : 'Limited',
+    safeTan: safeTan.length ? `${hToTime(safeTan[0].i)} – ${hToTime(safeTan[safeTan.length-1].i + 1)}` : 'None today',
+    avoidWindow: burnStart >= 0 ? `${hToTime(burnStart)} – ${hToTime(burnEnd + 1)}` : 'None',
+    peak: `${hToTime(peakIdx)}`,
+    peakValue: hourly[peakIdx],
+  };
+}
+
+// Time to burn (minutes) for avg skin type III at given UV
+function timeToBurn(uv) {
+  if (uv < 1) return Infinity;
+  return Math.round(200 / uv);
+}
+
+// Sunscreen reapply cadence
+function reapplyMinutes(uv) {
+  if (uv < 3) return 120;
+  if (uv < 6) return 90;
+  if (uv < 8) return 80;
+  return 60;
+}
+
+Object.assign(window, {
+  fetchUVData, uvColor, uvInterpColor, formatTime, findBestTimes,
+  timeToBurn, reapplyMinutes, simulated24h, simulatedOutlook, CHARLESTON, FORECAST_DAYS
+});
+</script>
+<script type="text/babel">// UV Wheel — STATIC categorical color wheel (matches reference).
+// Green=LOW at left, yellow=MODERATE top-left, orange=HIGH top-right, red=VERY HIGH right, purple=EXTREME bottom.
+// A pointer indicates where the current UV falls on the category scale.
+// Dragging the wheel scrubs through the day's hourly UV.
+
+const { useState, useEffect, useRef } = React;
+
+function UVWheel({ hourly, currentHour, sunrise, sunset, motion = 70, envMultiplier = 1, onScrub, isScrubbing, setIsScrubbing }) {
+  const size = 600;
+  const cx = size / 2;
+  const cy = size / 2;
+  const wrapRef = useRef(null);
+  const [activeMarker, setActiveMarker] = useState(null);
+
+  // Current UV
+  const adjHourly = hourly.map(v => v * envMultiplier);
+  const hLow = Math.floor(currentHour) % 24;
+  const hHigh = (hLow + 1) % 24;
+  const frac = currentHour - hLow;
+  const currentUV = adjHourly[hLow] * (1 - frac) + adjHourly[hHigh] * frac;
+  const { level, c: uvC } = uvColor(currentUV);
+
+  const R_OUTER = 268;
+  const R_INNER = 198;
+
+  // ====== STATIC CATEGORICAL WHEEL ======
+  // Bands (clockwise from 12 o'clock = 0°):
+  //  0-72°   : HIGH (orange)       — top-right
+  //  72-144° : VERY HIGH (red)     — right
+  //  144-216°: EXTREME (purple)    — bottom
+  //  216-288°: LOW (green)         — bottom-left/left
+  //  288-360°: MODERATE (yellow)   — top-left
+  // Each band = 72° (5 equal bands)
+  const BANDS = [
+    { label: 'HIGH',      start: 0,   end: 72,  c0: '#e8a63a', c1: '#e66b2a' },
+    { label: 'VERY HIGH', start: 72,  end: 144, c0: '#e66b2a', c1: '#c93a3a' },
+    { label: 'EXTREME',   start: 144, end: 216, c0: '#c93a3a', c1: '#6b3aa8' },
+    { label: 'LOW',       start: 216, end: 288, c0: '#3a9a6a', c1: '#8fc96a' },
+    { label: 'MODERATE',  start: 288, end: 360, c0: '#8fc96a', c1: '#e8c53a' },
+  ];
+
+  function polar(angleDeg, r) {
+    // angleDeg: 0 = top (12 o'clock), clockwise
+    const a = (angleDeg - 90) * Math.PI / 180;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  }
+
+  function bandPath(startDeg, endDeg, r0, r1) {
+    const [x0, y0] = polar(startDeg, r1);
+    const [x1, y1] = polar(endDeg, r1);
+    const [x2, y2] = polar(endDeg, r0);
+    const [x3, y3] = polar(startDeg, r0);
+    const large = (endDeg - startDeg) > 180 ? 1 : 0;
+    return `M${x0},${y0} A${r1},${r1} 0 ${large} 1 ${x1},${y1} L${x2},${y2} A${r0},${r0} 0 ${large} 0 ${x3},${y3} Z`;
+  }
+
+  // Find where the current UV falls on the category scale → that angle on the wheel
+  // LOW = UV 0-3, MODERATE = 3-6, HIGH = 6-8, VERY HIGH = 8-11, EXTREME = 11+
+  // Map UV to band angle center with interpolation within the band.
+  function uvToCategoryAngle(uv) {
+    // Each band covers a UV range and occupies 72°
+    // Ordering around the wheel starting from 0° (top) going clockwise:
+    //  HIGH (6-8)   : 0°..72°    center 36°
+    //  VERY HIGH (8-11): 72°..144° center 108°
+    //  EXTREME (11-13+): 144°..216° center 180°
+    //  LOW (0-3)    : 216°..288°  center 252°  (we'll map 0→216, 3→288)
+    //  MODERATE (3-6): 288°..360° center 324°
+    if (uv < 3) {
+      const t = uv / 3;
+      return 216 + t * 72;
+    } else if (uv < 6) {
+      const t = (uv - 3) / 3;
+      return 288 + t * 72;
+    } else if (uv < 8) {
+      const t = (uv - 6) / 2;
+      return 0 + t * 72;
+    } else if (uv < 11) {
+      const t = (uv - 8) / 3;
+      return 72 + t * 72;
+    } else {
+      const t = Math.min(1, (uv - 11) / 2);
+      return 144 + t * 72;
+    }
+  }
+
+  const pointerAngle = uvToCategoryAngle(currentUV);
+
+  // Build curved-text arc paths for each band, always drawn in a direction that keeps text right-side up.
+  // For bands whose midpoint is in the top half (angles near 0/360) we draw LEFT->RIGHT along the TOP of the arc.
+  // For bands at the bottom, we draw RIGHT->LEFT along the BOTTOM so text reads right-side up.
+  const R_TEXT = (R_INNER + R_OUTER) / 2 + 3;
+
+  function textArcPath(startDeg, endDeg, r, flip = false) {
+    // If flip, swap start/end and use opposite sweep so text goes the other way along the arc
+    let s = startDeg, e = endDeg, sweep = 1;
+    if (flip) { s = endDeg; e = startDeg; sweep = 0; }
+    const [x0, y0] = polar(s, r);
+    const [x1, y1] = polar(e, r);
+    const delta = flip ? (startDeg - endDeg) : (endDeg - startDeg);
+    const large = Math.abs(delta) > 180 ? 1 : 0;
+    return `M ${x0} ${y0} A ${r} ${r} 0 ${large} ${sweep} ${x1} ${y1}`;
+  }
+
+  // Time label
+  const hh = Math.floor(currentHour);
+  const mm = Math.floor((currentHour - hh) * 60);
+  const ampm = hh >= 12 ? 'PM' : 'AM';
+  const hhDisp = hh === 0 ? 12 : hh > 12 ? hh - 12 : hh;
+  const timeLabel = `${hhDisp}:${String(mm).padStart(2, '0')} ${ampm}`;
+
+  const uvInt = Math.floor(currentUV);
+  const uvDec = Math.round((currentUV - uvInt) * 10);
+
+  const breatheDuration = `${Math.max(2, 12 - motion / 10)}s`;
+
+  // === DRAG: convert pointer to hour (0-24) based on angle around center ===
+  function pointerToHour(clientX, clientY) {
+    const rect = wrapRef.current.getBoundingClientRect();
+    const px = clientX - rect.left - rect.width / 2;
+    const py = clientY - rect.top - rect.height / 2;
+    let a = Math.atan2(py, px) + Math.PI / 2;
+    if (a < 0) a += Math.PI * 2;
+    return (a / (Math.PI * 2)) * 24;
+  }
+
+  function handleDown(e) {
+    e.preventDefault();
+    setIsScrubbing(true);
+    const pt = e.touches ? e.touches[0] : e;
+    onScrub(pointerToHour(pt.clientX, pt.clientY));
+  }
+
+  useEffect(() => {
+    if (!isScrubbing) return;
+    function move(e) {
+      const pt = e.touches ? e.touches[0] : e;
+      onScrub(pointerToHour(pt.clientX, pt.clientY));
+    }
+    function up() { setIsScrubbing(false); }
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('touchmove', move, { passive: false });
+    window.addEventListener('touchend', up);
+    return () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('touchmove', move);
+      window.removeEventListener('touchend', up);
+    };
+  }, [isScrubbing]);
+
+  // Hour-of-day marker — smaller dot on outer edge showing the currently-viewed hour
+  const hourAngle = (currentHour / 24) * 360;
+  const [hx, hy] = polar(hourAngle, R_OUTER + 14);
+
+  return (
+    <div
+      ref={wrapRef}
+      className="wheel-wrap"
+      onPointerDown={handleDown}
+      style={{ cursor: isScrubbing ? 'grabbing' : 'grab', userSelect: 'none', touchAction: 'none' }}
+    >
+      <svg viewBox={`0 0 ${size} ${size}`}>
+        <defs>
+          {BANDS.map((b, i) => (
+            <linearGradient key={i} id={`bandg-${i}`}
+                            gradientUnits="userSpaceOnUse"
+                            x1={polar(b.start, R_OUTER)[0]} y1={polar(b.start, R_OUTER)[1]}
+                            x2={polar(b.end, R_OUTER)[0]}   y2={polar(b.end, R_OUTER)[1]}>
+              <stop offset="0%" stopColor={b.c0} />
+              <stop offset="100%" stopColor={b.c1} />
+            </linearGradient>
+          ))}
+          <radialGradient id="outerHalo" cx="50%" cy="50%" r="50%">
+            <stop offset="70%" stopColor={uvC} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={uvC} stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="orb" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+            <stop offset="85%" stopColor="#ffffff" stopOpacity="0.97" />
+            <stop offset="100%" stopColor={uvC} stopOpacity="0.2" />
+          </radialGradient>
+          {BANDS.map((b, i) => {
+            // For bands whose mid-angle is between 90° and 270° (right/bottom/left), flip so text reads right-side up
+            const mid = (b.start + b.end) / 2;
+            const flip = mid > 90 && mid < 270;
+            return (
+              <path key={`tp-${i}`} id={`bandpath-${i}`}
+                    d={textArcPath(b.start + 4, b.end - 4, R_TEXT, flip)}
+                    fill="none" />
+            );
+          })}
+        </defs>
+
+        {/* Ambient halo */}
+        <g style={{ animation: `breathe ${breatheDuration} ease-in-out infinite`, transformOrigin: `${cx}px ${cy}px`}}>
+          <circle cx={cx} cy={cy} r={300} fill="url(#outerHalo)" />
+        </g>
+
+        {/* Dashed outer ring */}
+        <g className="spin-slow" style={{transformOrigin: `${cx}px ${cy}px`}}>
+          <circle cx={cx} cy={cy} r={285} fill="none" stroke="var(--ink-2)" strokeWidth="0.5" strokeDasharray="1 8" opacity="0.35" />
+        </g>
+
+        {/* Hour ticks outside the colored ring */}
+        {Array.from({length: 24}).map((_, i) => {
+          const [x0, y0] = polar((i / 24) * 360, R_OUTER + 6);
+          const [x1, y1] = polar((i / 24) * 360, i % 6 === 0 ? R_OUTER + 16 : R_OUTER + 10);
+          return <line key={i} x1={x0} y1={y0} x2={x1} y2={y1}
+                       stroke="var(--ink-2)"
+                       strokeWidth={i % 6 === 0 ? 1.2 : 0.5}
+                       opacity={i % 6 === 0 ? 0.7 : 0.3} />;
+        })}
+
+        {/* Hour numerals */}
+        {[0, 6, 12, 18].map(h => {
+          const [x, y] = polar((h / 24) * 360, R_OUTER + 34);
+          const lbl = h === 0 ? '12a' : h === 12 ? '12p' : h > 12 ? `${h-12}p` : `${h}a`;
+          return (
+            <text key={h} x={x} y={y} textAnchor="middle" dominantBaseline="middle"
+                  style={{fontFamily: 'JetBrains Mono, monospace', fontSize: 13, letterSpacing: '0.08em', fill: 'var(--ink-2)', fontWeight: 500}}>
+              {lbl}
+            </text>
+          );
+        })}
+
+        {/* STATIC CATEGORICAL RING — 5 bands with gradients */}
+        {BANDS.map((b, i) => (
+          <path key={i}
+                d={bandPath(b.start, b.end, R_INNER, R_OUTER)}
+                fill={`url(#bandg-${i})`} />
+        ))}
+
+        {/* Band divider lines (thin) */}
+        {BANDS.map((b, i) => {
+          const [x0, y0] = polar(b.start, R_INNER);
+          const [x1, y1] = polar(b.start, R_OUTER);
+          return <line key={`div-${i}`} x1={x0} y1={y0} x2={x1} y2={y1}
+                       stroke="rgba(255,255,255,0.55)" strokeWidth="1.2" />;
+        })}
+
+        {/* Subtle inner & outer ring borders */}
+        <circle cx={cx} cy={cy} r={R_INNER} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+        <circle cx={cx} cy={cy} r={R_OUTER} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
+
+        {/* Curved band labels */}
+        {BANDS.map((b, i) => (
+          <text key={`lbl-${i}`}
+                style={{fontFamily: 'Inter, sans-serif', fontSize: 15, fontWeight: 700, letterSpacing: '0.18em', fill: 'rgba(255,255,255,0.98)'}}>
+            <textPath href={`#bandpath-${i}`} startOffset="50%" textAnchor="middle">
+              {b.label}
+            </textPath>
+          </text>
+        ))}
+
+        {/* Sunrise / Sunset markers — refined badges with hover/click emphasis */}
+        {[
+          [sunrise.getHours() + sunrise.getMinutes()/60, 'rise'],
+          [sunset.getHours()  + sunset.getMinutes()/60,  'set'],
+        ].map(([h, label]) => {
+          const angle = (h / 24) * 360;
+          const [x, y] = polar(angle, R_OUTER + 42);
+          const isRise = label === 'rise';
+          const isActive = activeMarker === label;
+          const iconColor = isRise ? '#f5a321' : '#d94f2a';
+          const bgColor   = isRise ? 'rgba(255, 251, 240, 0.96)' : 'rgba(255, 245, 240, 0.96)';
+          const glowColor = isRise ? 'rgba(245, 163, 33, 0.18)' : 'rgba(217, 79, 42, 0.16)';
+          const iconStroke = isActive ? 'rgba(255,255,255,0.98)' : iconColor;
+          const [rx, ry] = polar(angle, R_OUTER + 3);
+          const [bx, by] = polar(angle, R_OUTER + 24);
+          return (
+            <g key={label}
+               tabIndex={0}
+               role="button"
+               aria-label={isRise ? 'Sunrise details' : 'Sunset details'}
+               style={{ cursor: 'pointer', outline: 'none' }}
+               onPointerEnter={() => setActiveMarker(label)}
+               onPointerLeave={() => setActiveMarker(curr => (curr === label ? null : curr))}
+               onFocus={() => setActiveMarker(label)}
+               onBlur={() => setActiveMarker(curr => (curr === label ? null : curr))}
+               onClick={() => {
+                 setActiveMarker(label);
+                 const el = document.getElementById('conditions-section');
+                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+               }}
+               onKeyDown={(e) => {
+                 if (e.key === 'Enter' || e.key === ' ') {
+                   e.preventDefault();
+                   setActiveMarker(label);
+                   const el = document.getElementById('conditions-section');
+                   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                 }
+              }}>
+              <title>{isRise ? 'Sunrise' : 'Sunset'}</title>
+
+              <circle cx={x} cy={y} r={isActive ? '18' : '15.5'} fill={glowColor} opacity={isActive ? '0.88' : '0.52'} />
+
+              <line x1={rx} y1={ry} x2={bx} y2={by}
+                    stroke={iconColor} strokeWidth={isActive ? '1.2' : '1'} strokeDasharray="1.5 4" opacity={isActive ? '0.72' : '0.42'} />
+
+              <circle cx={x} cy={y} r="13.25" fill={isActive ? iconColor : bgColor} stroke="rgba(255,255,255,0.8)" strokeWidth="1.05" />
+              <circle cx={x} cy={y} r="13.25" fill="none" stroke={isActive ? 'rgba(255,255,255,0.28)' : iconColor} strokeWidth="1.05" opacity={isActive ? '1' : '0.58'} />
+
+              <line x1={x-6} y1={y+1.5} x2={x+6} y2={y+1.5}
+                    stroke={iconStroke} strokeWidth="1.3" strokeLinecap="round" opacity={isActive ? '1' : '0.84'} />
+
+              {isRise
+                ? (
+                  <>
+                    <path d={`M ${x-4.9} ${y+1.5} A 4.9 4.9 0 0 1 ${x+4.9} ${y+1.5}`}
+                          fill="none" stroke={iconStroke} strokeWidth="1.65" strokeLinecap="round" />
+                    <path d={`M ${x} ${y-7.7} L ${x} ${y-5.6} M ${x-2.3} ${y-6.4} L ${x} ${y-8.6} L ${x+2.3} ${y-6.4}`}
+                          fill="none" stroke={iconStroke} strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                  </>
+                )
+                : (
+                  <>
+                    <path d={`M ${x-4.9} ${y+1.5} A 4.9 4.9 0 0 1 ${x+4.9} ${y+1.5}`}
+                          fill="none" stroke={iconStroke} strokeWidth="1.65" strokeLinecap="round" />
+                    <path d={`M ${x} ${y-9.2} L ${x} ${y-7.4} M ${x-2.3} ${y-8.1} L ${x} ${y-5.9} L ${x+2.3} ${y-8.1}`}
+                          fill="none" stroke={iconStroke} strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />
+                  </>
+                )
+              }
+            </g>
+          );
+        })}
+
+        {/* === CATEGORY POINTER — indicates current UV on the ring === */}
+        <g style={{transform: `rotate(${pointerAngle}deg)`, transformOrigin: `${cx}px ${cy}px`, transition: isScrubbing ? 'transform 0.15s ease-out' : 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)'}}>
+          {/* Inward-pointing triangular notch sitting inside the ring band */}
+          <path d={`M ${cx} ${cy - R_INNER + 4} l -10 -16 l 20 0 z`}
+                fill="white"
+                stroke={uvC}
+                strokeWidth="2"
+                strokeLinejoin="round" />
+          {/* Small accent dot at its tip on the ring */}
+          <circle cx={cx} cy={cy - R_INNER + 4} r="3" fill={uvC} />
+        </g>
+
+        {/* === HOUR POINTER on outer edge — shows where "this hour" falls === */}
+        <g style={{transform: `rotate(${hourAngle}deg)`, transformOrigin: `${cx}px ${cy}px`, transition: isScrubbing ? 'transform 0.15s ease-out' : 'transform 0.6s ease-out'}}>
+          <circle cx={cx} cy={cy - R_OUTER - 14} r="6" fill="var(--ink-0)" />
+          <circle cx={cx} cy={cy - R_OUTER - 14} r="10" fill="none" stroke="var(--ink-0)" strokeWidth="0.8" opacity="0.3" />
+        </g>
+
+        {/* Inner white disc (readout background) */}
+        <circle cx={cx} cy={cy} r={R_INNER - 4} fill="url(#orb)" />
+        <circle cx={cx} cy={cy} r={R_INNER - 4} fill="none" stroke={uvC} strokeWidth="1" opacity="0.25" />
+
+        {/* Pulsing inner ring */}
+        <g style={{transformOrigin: `${cx}px ${cy}px`, animation: `breathe ${breatheDuration} ease-in-out infinite`}}>
+          <circle cx={cx} cy={cy} r={R_INNER - 14} fill="none" stroke={uvC} strokeWidth="0.5" opacity="0.35" strokeDasharray="2 4" />
+        </g>
+      </svg>
+
+      {/* Center readout */}
+      <div className="wheel-readout">
+        <div className="label-top" style={{color: uvC, fontWeight: 700}}>{level.toUpperCase()}</div>
+        <div className="uv-num">
+          {uvInt}
+          <span className="decimal">.{uvDec}</span>
+        </div>
+        <div className="time mono" style={{marginTop: 8}}>{timeLabel}</div>
+        {envMultiplier !== 1 && (
+          <div className="mono" style={{fontSize: 10, color: uvC, marginTop: 6, letterSpacing: '0.14em'}}>
+            {envMultiplier > 1 ? `+${Math.round((envMultiplier - 1) * 100)}%` : `${Math.round((envMultiplier - 1) * 100)}%`} ENV
+          </div>
+        )}
+        {isScrubbing && (
+          <div className="mono" style={{fontSize: 9, color: 'var(--ink-2)', marginTop: 6, letterSpacing: '0.18em'}}>
+            ◉ SCRUBBING
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+window.UVWheel = UVWheel;
+</script>
+<script type="text/babel">const { useState: useS, useEffect: useE, useRef: useR, useMemo: useM } = React;
+
+/* ============ SKIN TYPES — Fitzpatrick I-VI ============ */
+const SKIN_TYPES = [
+  { id: 1, label: 'I',   swatch: '#f5d5b8', burnMult: 2.5,  desc: 'Always burns' },
+  { id: 2, label: 'II',  swatch: '#e8c090', burnMult: 2.0,  desc: 'Burns easily' },
+  { id: 3, label: 'III', swatch: '#c8945a', burnMult: 1.5,  desc: 'Sometimes burns' },
+  { id: 4, label: 'IV',  swatch: '#a06835', burnMult: 1.0,  desc: 'Rarely burns' },
+  { id: 5, label: 'V',   swatch: '#704020', burnMult: 0.7,  desc: 'Very rarely burns' },
+  { id: 6, label: 'VI',  swatch: '#3a1a08', burnMult: 0.5,  desc: 'Never burns' },
+];
+
+/* Base MED (Minimal Erythemal Dose) exposure in minutes at UV=1 */
+const BASE_MIN_AT_UV1 = 600; // skin type III baseline
+
+function burnMinutes(uv, skinType) {
+  if (uv < 0.5) return Infinity;
+  const st = SKIN_TYPES.find(s => s.id === skinType) || SKIN_TYPES[2];
+  return Math.round((BASE_MIN_AT_UV1 / st.burnMult) / uv);
+}
+
+function reapplyMinutes(uv) {
+  if (uv < 3)  return 120;
+  if (uv < 6)  return 90;
+  if (uv < 8)  return 80;
+  if (uv < 11) return 60;
+  return 40;
+}
+
+function spfRec(uv) {
+  if (uv < 3)  return 15;
+  if (uv < 6)  return 30;
+  if (uv < 8)  return 30;
+  return 50;
+}
+
+/* UV Tanning Score (0-100): rewards moderate UV in sweet-spot window, penalizes extremes */
+function tanningScore(uv, envMult) {
+  const adjUV = uv * envMult;
+  if (adjUV < 1)  return 0;
+  if (adjUV < 3)  return Math.round(adjUV / 3 * 35);
+  if (adjUV < 6)  return Math.round(35 + (adjUV - 3) / 3 * 55); // 35→90
+  if (adjUV < 8)  return Math.round(90 - (adjUV - 6) / 2 * 20); // 90→70
+  if (adjUV < 11) return Math.round(70 - (adjUV - 8) / 3 * 40); // 70→30
+  return Math.max(0, Math.round(30 - (adjUV - 11) * 10));
+}
+
+function scoreLabel(score) {
+  if (score < 20) return ['Minimal', '#4cb8a4'];
+  if (score < 40) return ['Building', '#86c55e'];
+  if (score < 65) return ['Good', '#e4c53e'];
+  if (score < 80) return ['Excellent', '#f08030'];
+  if (score < 92) return ['Peak', '#e04040'];
+  return ['Intense', '#8e32a8'];
+}
+
+/* Smart advisory text */
+function smartAdvice(uv, skinType, envMult) {
+  const adjUV = uv * envMult;
+  const burn = burnMinutes(uv, skinType);
+  const { level } = uvColor(adjUV);
+  if (adjUV < 1)  return { head: 'No UV — sun is below the horizon.', body: 'Enjoy the evening. UV returns near sunrise tomorrow.' };
+  if (adjUV < 3)  return { head: 'Light UV — gentle exposure.',        body: `You can stay out comfortably. Burns take over ${burn} min for skin type ${skinType}.` };
+  if (adjUV < 6)  return { head: 'Moderate UV — ideal tanning window.', body: `SPF 30 recommended. Safe tanning for up to ${burn} min unprotected for skin type ${skinType}.` };
+  if (adjUV < 8)  return { head: 'High UV — protect between sessions.', body: `Reapply sunscreen every ${reapplyMinutes(adjUV)} min. Burns possible in ${burn} min.` };
+  if (adjUV < 11) return { head: 'Very high — minimize direct exposure.', body: `Seek shade during peak hours. Burns in as little as ${burn} min. SPF 50 required.` };
+  return { head: 'Extreme UV — cover up completely.', body: `Unprotected skin burns in under ${burn} min. SPF 50+, hat, full coverage essential.` };
+}
+
+/* ============ SKIN TYPE SELECTOR ============ */
+function SkinTypeSelector({ skinType, onChange }) {
+  return (
+    <div>
+      <div className="card-label"><IconEye size={12} />Skin Type — Fitzpatrick Scale</div>
+      <div className="skin-types">
+        {SKIN_TYPES.map(st => (
+          <button key={st.id} className={`skin-type ${skinType === st.id ? 'active' : ''}`} onClick={() => onChange(st.id)}>
+            <div className="swatch" style={{ background: st.swatch, border: '1px solid var(--line)' }} />
+            <div className="st-label">Type {st.label}</div>
+          </button>
+        ))}
+      </div>
+      <div style={{ marginTop: 10, fontSize: 12, color: 'var(--ink-3)', fontStyle: 'italic' }}>
+        {SKIN_TYPES.find(s => s.id === skinType)?.desc} — personalizes burn estimates below
+      </div>
+    </div>
+  );
+}
+
+/* ============ BURN TIMER ============ */
+function BurnTimer({ uv, skinType, startTime }) {
+  const [elapsed, setElapsed] = useS(0);
+  const [running, setRunning] = useS(false);
+  const intervalRef = useR(null);
+
+  const burnMin = burnMinutes(uv, skinType);
+  const safeMin = isFinite(burnMin) ? burnMin : 999;
+  const pct = isFinite(burnMin) ? Math.min(1, elapsed / safeMin) : 0;
+  const remaining = Math.max(0, safeMin - elapsed);
+
+  useE(() => {
+    if (running) {
+      intervalRef.current = setInterval(() => setElapsed(e => e + 1/60), 1000);
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [running]);
+
+  function reset() { setElapsed(0); setRunning(false); }
+
+  const fillColor = pct < 0.5 ? '#86c55e' : pct < 0.75 ? '#e4c53e' : pct < 0.9 ? '#f08030' : '#e04040';
+
+  return (
+    <div>
+      <div className="card-label"><IconClock size={12} />Burn Timer</div>
+      <div className="burn-timer">
+        <div className="timer-num serif">
+          {isFinite(burnMin) ? (
+            running ? `${Math.floor(remaining)}'` : `${burnMin}'`
+          ) : '∞'}
+        </div>
+        <div className="timer-label">
+          {running ? `${Math.floor(elapsed)} min elapsed · ${Math.ceil(remaining)} min remaining` : `minutes until burn · skin type ${skinType}`}
+        </div>
+        <div className="timer-bar">
+          <div className="timer-fill" style={{ width: `${pct * 100}%`, background: fillColor }} />
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+        <button onClick={() => setRunning(r => !r)} style={{
+          flex: 1, padding: '10px', border: '1.5px solid var(--line)', borderRadius: 'var(--radius-sm)',
+          background: running ? 'var(--ink)' : 'transparent', color: running ? 'var(--sand-50)' : 'var(--ink)',
+          fontFamily: 'JetBrains Mono, monospace', fontSize: 10, letterSpacing: '0.16em',
+          textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.18s ease'
+        }}>
+          {running ? 'Pause' : 'Start Timer'}
+        </button>
+        <button onClick={reset} style={{
+          padding: '10px 16px', border: '1.5px solid var(--line)', borderRadius: 'var(--radius-sm)',
+          background: 'transparent', color: 'var(--ink-3)',
+          fontFamily: 'JetBrains Mono, monospace', fontSize: 10, letterSpacing: '0.12em',
+          textTransform: 'uppercase', cursor: 'pointer', transition: 'all 0.18s ease'
+        }}>
+          Reset
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ============ UV TANNING SCORE ============ */
+function TanningScore({ uv, envMult }) {
+  const score = tanningScore(uv, envMult);
+  const [label, color] = scoreLabel(score);
+  const r = 46, circ = 2 * Math.PI * r;
+  const dash = (score / 100) * circ;
+
+  return (
+    <div className="score-wrap">
+      <div className="card-label" style={{ marginBottom: 0 }}><IconSparkle size={12} />Tan Quality Score</div>
+      <div className="score-ring" style={{ marginTop: 14 }}>
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r={r} fill="none" stroke="var(--sand-100)" strokeWidth="10" />
+          <circle cx="60" cy="60" r={r} fill="none" stroke={color}
+                  strokeWidth="10" strokeLinecap="round"
+                  strokeDasharray={`${dash} ${circ}`}
+                  style={{ transition: 'stroke-dasharray 0.8s cubic-bezier(0.22,1,0.36,1), stroke 0.6s ease' }} />
+        </svg>
+        <div className="score-num">
+          <div className="n serif" style={{ color }}>{score}</div>
+          <div className="of mono">/ 100</div>
+        </div>
+      </div>
+      <div className="score-label serif" style={{ color }}>{label}</div>
+      <div className="score-desc">{score >= 60 ? 'Good tanning conditions' : score >= 30 ? 'Moderate opportunity' : 'Limited UV benefit'}</div>
+    </div>
+  );
+}
+
+/* ============ SUN ARC ============ */
+function SunArc({ sunrise, sunset, now }) {
+  const w = 340, h = 120;
+  const sx = 24, ex = w - 24, baseY = h - 14, peakY = 22;
+  const total = sunset - sunrise;
+  const progress = Math.max(0, Math.min(1, (now - sunrise) / total));
+  const path = `M ${sx} ${baseY} Q ${w/2} ${peakY} ${ex} ${baseY}`;
+  const t = progress;
+  const sunX = sx + (ex - sx) * t;
+  const sunY = baseY + (peakY - baseY) * 4 * t * (1 - t);
+
+  return (
+    <div className="sun-arc">
+      <svg viewBox={`0 0 ${w} ${h}`}>
+        <defs>
+          <linearGradient id="arcg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="var(--accent-2)" stopOpacity="0.15" />
+            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="var(--accent-2)" stopOpacity="0.15" />
+          </linearGradient>
+          <radialGradient id="sunglow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="var(--accent-2)" stopOpacity="1" />
+            <stop offset="100%" stopColor="var(--accent-2)" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="progressG" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="var(--accent-2)" />
+            <stop offset="100%" stopColor="var(--accent)" />
+          </linearGradient>
+        </defs>
+
+        <line x1="0" y1={baseY} x2={w} y2={baseY} stroke="var(--line)" strokeWidth="1" />
+        <path d={path} fill="none" stroke="var(--line)" strokeWidth="1.5" strokeDasharray="3 5" />
+        {progress > 0.01 && (
+          <path d={path} fill="none" stroke="url(#progressG)" strokeWidth="2"
+                strokeDasharray={`${progress * 320} 1000`} />
+        )}
+        <circle cx={sunX} cy={sunY} r="20" fill="url(#sunglow)" opacity="0.5" />
+        <circle cx={sunX} cy={sunY} r="8" fill="var(--accent-2)" />
+        <circle cx={sx} cy={baseY} r="3.5" fill="var(--ink-3)" />
+        <circle cx={ex} cy={baseY} r="3.5" fill="var(--ink-3)" />
+        <text x={sx} y={baseY + 15} textAnchor="middle" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '0.08em', fill: 'var(--ink-3)' }}>
+          {sunrise.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+        </text>
+        <text x={ex} y={baseY + 15} textAnchor="middle" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, letterSpacing: '0.08em', fill: 'var(--ink-3)' }}>
+          {sunset.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+/* ============ HOURLY STRIP ============ */
+function HourlyStrip({ hourly, cloud = [], currentHour, sunrise, sunset }) {
+  const maxUV = 12;
+  const nowIdx = Math.floor(currentHour);
+  const cloudSeries = hourly.map((_, i) => Math.max(0, Math.min(100, cloud[i] ?? 0)));
+  const usefulStart = hourly.findIndex(v => v >= 3);
+  const usefulEnd = usefulStart >= 0 ? hourly.length - 1 - [...hourly].reverse().findIndex(v => v >= 3) : -1;
+  const avoidStart = hourly.findIndex(v => v >= 8);
+  const avoidEnd = avoidStart >= 0 ? hourly.length - 1 - [...hourly].reverse().findIndex(v => v >= 8) : -1;
+  const clearestIdx = cloudSeries.reduce((best, cloudPct, i) => {
+    if (hourly[i] < 1) return best;
+    if (best === -1) return i;
+    if (cloudPct < cloudSeries[best]) return i;
+    if (cloudPct === cloudSeries[best] && hourly[i] > hourly[best]) return i;
+    return best;
+  }, -1);
+  const daylightHours = sunrise && sunset ? Math.max(0, (sunset - sunrise) / 3600000) : 0;
+
+  function compactHourLabel(hour) {
+    const suffix = hour >= 12 ? 'p' : 'a';
+    const normalized = hour % 12 === 0 ? 12 : hour % 12;
+    return `${normalized}${suffix}`;
+  }
+
+  function windowLabel(start, end) {
+    if (start < 0 || end < start) return 'None today';
+    return `${compactHourLabel(start)} - ${compactHourLabel((end + 1) % 24)}`;
+  }
+
+  const insightItems = [
+    {
+      label: 'Useful UV',
+      value: usefulStart >= 0 ? windowLabel(usefulStart, usefulEnd) : 'Limited',
+      sub: usefulStart >= 0 ? 'UV 3+ for vitamin D / color' : 'Very soft conditions today'
+    },
+    {
+      label: 'Avoid Window',
+      value: avoidStart >= 0 ? windowLabel(avoidStart, avoidEnd) : 'None',
+      sub: avoidStart >= 0 ? 'UV 8+ burns fast' : 'Peak stays below severe risk'
+    },
+    {
+      label: 'Clearest Hour',
+      value: clearestIdx >= 0 ? compactHourLabel(clearestIdx) : 'After dark',
+      sub: clearestIdx >= 0 ? `${cloudSeries[clearestIdx]}% cloud cover` : 'No daylight hours left'
+    },
+    {
+      label: 'Daylight Span',
+      value: sunrise && sunset ? `${formatTime(sunrise)} - ${formatTime(sunset)}` : '—',
+      sub: sunrise && sunset ? `${daylightHours.toFixed(1)} hrs of sun` : 'Sun times unavailable'
+    },
+  ];
+
+  return (
+    <div>
+      <div className="hourly">
+        {hourly.map((v, i) => (
+          <div key={i} className={`hourly-bar ${i === nowIdx ? 'now' : ''}`}>
+            <div className="fill" style={{
+              height: `${Math.max(3, (v / maxUV) * 100)}%`,
+              background: v > 0 ? uvInterpColor(v) : 'transparent',
+              opacity: v > 0 ? 0.9 : 0
+            }} />
+          </div>
+        ))}
+      </div>
+      <div className="hourly-axis">
+        <span>12a</span><span>6a</span><span>12p</span><span>6p</span><span>12a</span>
+      </div>
+
+      <div className="hourly-secondary">
+        <div className="mini-trend">
+          <div className="mini-trend-head">
+            <span className="mini-trend-title">Cloud Cover</span>
+            <span className="mini-trend-meta">{cloudSeries[nowIdx] ?? 0}% now · lower is clearer</span>
+          </div>
+          <div className="cloud-hourly">
+            {cloudSeries.map((cloudPct, i) => (
+              <div key={i} className={`cloud-bar-shell ${i === nowIdx ? 'now' : ''}`}>
+                <div
+                  className="cloud-bar-fill"
+                  style={{
+                    height: `${Math.max(8, cloudPct)}%`,
+                    opacity: Math.max(0.24, cloudPct / 100),
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="hourly-axis mini-axis">
+            <span>12a</span><span>6a</span><span>12p</span><span>6p</span><span>12a</span>
+          </div>
+        </div>
+
+        <div className="hourly-insights">
+          {insightItems.map((item) => (
+            <div key={item.label} className="insight-card">
+              <div className="insight-k">{item.label}</div>
+              <div className="insight-v serif">{item.value}</div>
+              <div className="insight-sub">{item.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ 14-DAY OUTLOOK ============ */
+function WeekOutlook({ week, weekDates }) {
+  const dows = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return (
+    <div className="week">
+      {week.slice(0, 14).map((v, i) => {
+        const d = weekDates[i] || new Date();
+        return (
+          <div key={i} className="day">
+            <div className="dow">{i === 0 ? 'Today' : dows[d.getDay()]}</div>
+            <div className="dot" style={{ background: uvInterpColor(v), boxShadow: `0 0 14px ${uvInterpColor(v)}50` }} />
+            <div className="peak serif">{v.toFixed(1)}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ============ BEST WINDOWS ============ */
+function BestTimes({ best }) {
+  const blocks = [
+    { name: 'Vitamin D Window', desc: 'UV 3–7 · safe exposure',    when: best.vitaminD,    color: '#86c55e', icon: <IconLeaf size={12} /> },
+    { name: 'Safe Tan Window',  desc: 'UV 3–5 · gentle color',     when: best.safeTan,     color: '#e4c53e', icon: <IconSparkle size={12} /> },
+    { name: 'Peak Intensity',   desc: `UV ${best.peakValue.toFixed(1)} · strongest`,       when: best.peak,        color: '#e04040', icon: <IconSun size={12} /> },
+    { name: 'Avoid Window',     desc: 'UV 8+ · burns quickly',     when: best.avoidWindow, color: '#8e32a8', icon: <IconAlert size={12} /> },
+  ];
+  return (
+    <div>
+      {blocks.map((b, i) => (
+        <div key={i} className="time-block">
+          <div className="left">
+            <div className="pip" style={{ background: b.color }} />
+            <div>
+              <div className="t-name serif">{b.name}</div>
+              <div className="t-desc">{b.desc}</div>
+            </div>
+          </div>
+          <div className="t-when mono">{b.when}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ============ PROTECTION PANEL ============ */
+function ProtectionPanel({ uv, skinType }) {
+  const burn = burnMinutes(uv, skinType);
+  const reapply = reapplyMinutes(uv);
+  const spf = spfRec(uv);
+
+  return (
+    <div>
+      <div className="stat-row">
+        <div className="k"><IconShield size={13} />Recommended SPF</div>
+        <div className="v serif">{spf}<span className="unit">MIN</span></div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconDrop size={13} />Reapply every</div>
+        <div className="v serif">{reapply}<span className="unit">MIN</span></div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconClock size={13} />Burn estimate</div>
+        <div className="v serif">{burn === Infinity ? '∞' : burn}<span className="unit">MIN</span></div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconEye size={13} />Eye protection</div>
+        <div className="v serif" style={{ fontSize: 16 }}>{uv >= 3 ? 'Required' : 'Optional'}</div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconWind size={13} />Clothing</div>
+        <div className="v serif" style={{ fontSize: 15 }}>{uv >= 6 ? 'UPF 50' : uv >= 3 ? 'Lightweight' : 'Optional'}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ CONDITIONS PANEL ============ */
+function Conditions({ sunrise, sunset, cloudNow }) {
+  const solarNoon = new Date((sunrise.getTime() + sunset.getTime()) / 2);
+  const daylight = (sunset - sunrise) / 3600000;
+  const now = new Date();
+  const remaining = Math.max(0, (sunset - now) / 3600000);
+
+  return (
+    <div>
+      <div className="stat-row">
+        <div className="k"><IconSunrise size={13} />Sunrise</div>
+        <div className="v serif">{formatTime(sunrise)}</div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconSun size={13} />Solar Noon</div>
+        <div className="v serif">{formatTime(solarNoon)}</div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconSunset size={13} />Sunset</div>
+        <div className="v serif">{formatTime(sunset)}</div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconClock size={13} />Daylight Left</div>
+        <div className="v serif">{remaining > 0 ? `${remaining.toFixed(1)}` : '0'}<span className="unit">HRS</span></div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconCloud size={13} />Cloud Cover</div>
+        <div className="v serif">{cloudNow}<span className="unit">%</span></div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ BIG STAT MINI CARDS ============ */
+function MiniStatCard({ label, value, unit, icon, color, sub }) {
+  return (
+    <div className="card" style={{ padding: '20px 22px' }}>
+      <div className="card-label">{icon}{label}</div>
+      <div className="big-stat">
+        <div className="num serif" style={{ color: color || 'var(--ink)' }}>
+          {value}
+          {unit && <span className="unit-sm">{unit}</span>}
+        </div>
+        {sub && <div className="sub-note">{sub}</div>}
+      </div>
+    </div>
+  );
+}
+
+/* ============ ADVISORY BANNER ============ */
+function AdvisoryBanner({ uv, skinType, envMult }) {
+  const { head, body } = smartAdvice(uv, skinType, envMult);
+  const adjUV = uv * envMult;
+  const { c } = uvColor(adjUV);
+  return (
+    <div className="advisory-banner" style={{ background: `linear-gradient(135deg, ${c}ee, ${c}bb)` }}>
+      <div className="adv-icon"><IconAlert size={22} stroke="white" /></div>
+      <div>
+        <div className="adv-head">{head}</div>
+        <div className="adv-sub">{body}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ VITAMIN D ESTIMATOR ============ */
+// Rough estimate: average adult produces ~1000 IU per hour at UV index 3,
+// scaling linearly. Full-body exposure; typical clothed = 25% body surface.
+function vitDPerHour(uv, bodyPct = 0.25) {
+  if (uv < 1) return 0;
+  const base = (uv / 3) * 1000; // IU/hr at full body exposure
+  return Math.round(base * bodyPct);
+}
+
+function vitDDaily(hourly, bodyPct = 0.25) {
+  return hourly.reduce((sum, v) => sum + vitDPerHour(v, bodyPct), 0);
+}
+
+const EXPOSURE_LEVELS = [
+  { label: 'Hands & face', pct: 0.10 },
+  { label: 'Arms out',     pct: 0.20 },
+  { label: 'T-shirt',      pct: 0.30 },
+  { label: 'Swimsuit',     pct: 0.70 },
+];
+
+function VitaminDCard({ uv, hourly }) {
+  const [expIdx, setExpIdx] = useS(1);
+  const exp = EXPOSURE_LEVELS[expIdx];
+  const nowRate = vitDPerHour(uv, exp.pct);
+  const daily   = vitDDaily(hourly, exp.pct);
+  const rda     = 600; // IU, general adult RDA
+  const rdaPct  = Math.min(100, Math.round((daily / rda) * 100));
+
+  // Time to reach RDA at current UV
+  const minsToRDA = nowRate > 0 ? Math.round((rda / nowRate) * 60) : null;
+
+  return (
+    <div>
+      <div className="card-label"><IconLeaf size={12} />Vitamin D Estimator</div>
+
+      {/* Exposure selector */}
+      <div style={{ display: 'flex', gap: 5, marginBottom: 16, flexWrap: 'wrap' }}>
+        {EXPOSURE_LEVELS.map((e, i) => (
+          <button key={i} onClick={() => setExpIdx(i)} style={{
+            padding: '6px 10px', borderRadius: 8,
+            border: '1px solid var(--line)',
+            background: expIdx === i ? 'var(--ink)' : 'transparent',
+            color: expIdx === i ? 'var(--sand-50)' : 'var(--ink-2)',
+            fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 500,
+            cursor: 'pointer', transition: 'all 0.15s ease',
+          }}>{e.label}</button>
+        ))}
+      </div>
+
+      <div className="stat-row">
+        <div className="k"><IconSun size={13} />Producing now</div>
+        <div className="v serif" style={{ color: nowRate > 0 ? '#86c55e' : 'var(--ink-3)' }}>
+          {nowRate > 0 ? nowRate : '—'}<span className="unit">{nowRate > 0 ? 'IU/hr' : ''}</span>
+        </div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconClock size={13} />Minutes to RDA</div>
+        <div className="v serif">
+          {minsToRDA ? minsToRDA : '∞'}<span className="unit">{minsToRDA ? 'min' : ''}</span>
+        </div>
+      </div>
+      <div className="stat-row">
+        <div className="k"><IconSparkle size={13} />Today's potential</div>
+        <div className="v serif">{daily > 0 ? daily.toLocaleString() : '—'}<span className="unit">{daily > 0 ? 'IU' : ''}</span>
+        </div>
+      </div>
+
+      {/* RDA progress bar */}
+      <div style={{ marginTop: 14 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+          <span className="label" style={{ fontSize: 9 }}>Daily RDA ({rda} IU)</span>
+          <span className="label" style={{ fontSize: 9, color: rdaPct >= 100 ? '#86c55e' : 'var(--ink-3)' }}>{rdaPct}%</span>
+        </div>
+        <div style={{ height: 5, background: 'var(--sand-100)', borderRadius: 100, overflow: 'hidden' }}>
+          <div style={{
+            height: '100%', borderRadius: 100,
+            width: `${rdaPct}%`,
+            background: rdaPct >= 100 ? '#86c55e' : rdaPct > 60 ? '#e4c53e' : '#f08030',
+            transition: 'width 0.6s ease, background 0.6s ease'
+          }} />
+        </div>
+        <div style={{ marginTop: 8, fontSize: 11, color: 'var(--ink-3)', fontStyle: 'italic' }}>
+          {rdaPct >= 100 ? 'Full daily dose achievable today' :
+           rdaPct > 50 ? 'Good production day' : 'Limited synthesis conditions'}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, {
+  SunArc, HourlyStrip, WeekOutlook, BestTimes, ProtectionPanel, Conditions,
+  SkinTypeSelector, BurnTimer, TanningScore, MiniStatCard, AdvisoryBanner, VitaminDCard,
+  burnMinutes, reapplyMinutes, spfRec, tanningScore, scoreLabel, smartAdvice,
+  vitDPerHour, vitDDaily, SKIN_TYPES
+});
+</script>
+<script type="text/babel">const { useState: uS, useEffect: uE, useRef: uR } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "solar",
+  "motion": 70
+}/*EDITMODE-END*/;
+
+const ENVIRONMENTS = {
+  unset:  { label: 'Open Sky',  mult: 1.0,  icon: 'IconSun',      desc: 'Baseline UV' },
+  beach:  { label: 'Beach',     mult: 1.25, icon: 'IconWave',     desc: 'Sand reflects +25%' },
+  water:  { label: 'On Water',  mult: 1.35, icon: 'IconDrop',     desc: 'Water reflects +35%' },
+  snow:   { label: 'Snow',      mult: 1.65, icon: 'IconSparkle',  desc: 'Snow reflects +65%' },
+  city:   { label: 'City',      mult: 1.1,  icon: 'IconPin',      desc: 'Glass/concrete +10%' },
+  shade:  { label: 'Shade',     mult: 0.35, icon: 'IconCloud',    desc: 'Partial shade −65%' },
+};
+
+function App() {
+  const [data, setData]       = uS(null);
+  const [loading, setLoading] = uS(true);
+  const [tweaks, setTweaks]   = uS(TWEAK_DEFAULTS);
+  const [showTweaks, setShowTweaks] = uS(false);
+  const [envKey, setEnvKey]   = uS('unset');
+  const [skinType, setSkinType] = uS(3);
+  const [scrubHour, setScrubHour] = uS(-1);
+  const [isScrubbing, setIsScrubbing] = uS(false);
+  const [scrolled, setScrolled] = uS(false);
+  const [tick, setTick]       = uS(0);
+
+  // Sticky header scroll detection
+  uE(() => {
+    const handler = () => setScrolled(window.scrollY > 80);
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
+
+  // 30s live tick
+  uE(() => {
+    const id = setInterval(() => setTick(t => t + 1), 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Theme
+  uE(() => {
+    // solar = default warm (no data-theme), dusk = dark mode
+    document.documentElement.dataset.theme = tweaks.theme === 'dusk' ? 'dusk' : '';
+  }, [tweaks.theme]);
+
+  // Edit mode
+  uE(() => {
+    const h = (e) => {
+      if (e.data?.type === '__activate_edit_mode')   setShowTweaks(true);
+      if (e.data?.type === '__deactivate_edit_mode') setShowTweaks(false);
+    };
+    window.addEventListener('message', h);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', h);
+  }, []);
+
+  function updateTweak(key, val) {
+    setTweaks(t => {
+      const next = { ...t, [key]: val };
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [key]: val } }, '*');
+      return next;
+    });
+  }
+
+  uE(() => {
+    fetchUVData().then(d => { setData(d); setLoading(false); });
+  }, []);
+
+  if (loading || !data) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="mono" style={{ fontSize: 10, letterSpacing: '0.24em', color: 'var(--ink-3)' }}>
+          LOADING · CHARLESTON
+        </div>
+      </div>
+    );
+  }
+
+  const now       = new Date();
+  const liveHour  = now.getHours() + now.getMinutes() / 60;
+  const currentHour = scrubHour >= 0 ? scrubHour : liveHour;
+  const isLive    = scrubHour < 0;
+
+  const env       = ENVIRONMENTS[envKey];
+  const envMult   = env.mult;
+  const adjHourly = data.hourly.map(v => v * envMult);
+
+  const hLow   = Math.floor(currentHour) % 24;
+  const hHigh  = (hLow + 1) % 24;
+  const frac   = currentHour - hLow;
+  const currentUV = adjHourly[hLow] * (1 - frac) + adjHourly[hHigh] * frac;
+  const { level, c: uvC } = uvColor(currentUV);
+
+  const cloudNow  = data.cloud?.[hLow] ?? 20;
+  const best      = findBestTimes(adjHourly, data.sunrise, data.sunset);
+  const burnMin   = burnMinutes(currentUV, skinType);
+  const score     = tanningScore(currentUV, 1); // env already baked in
+  const [scoreLabel_, scoreColor] = scoreLabel(score);
+
+  // Sun hours remaining
+  const sunRemaining = Math.max(0, (data.sunset - now) / 3600000).toFixed(1);
+
+  function EnvIcon({ k }) {
+    const names = { unset: IconSun, beach: IconWave, water: IconDrop, snow: IconSparkle, city: IconPin, shade: IconCloud };
+    const Ico = names[k] || IconSun;
+    return <Ico size={14} />;
+  }
+
+  return (
+    <div className="app">
+      <div className="sky" />
+      <div className="sun-halo" />
+
+      {/* ── STICKY HEADER ── */}
+      <header className={`sticky-bar ${scrolled ? 'scrolled' : ''}`}>
+        <div className="brand">
+          <div className="brand-mark">
+            <svg viewBox="0 0 34 34" width="34" height="34">
+              <defs>
+                <radialGradient id="bG">
+                  <stop offset="0%" stopColor="var(--accent-2)" />
+                  <stop offset="100%" stopColor="var(--accent)" />
+                </radialGradient>
+              </defs>
+              <circle cx="17" cy="17" r="7" fill="url(#bG)" />
+              <circle cx="17" cy="17" r="13" fill="none" stroke="var(--ink)" strokeWidth="0.5" strokeDasharray="1 3.2"
+                      className="spin-slow" style={{ transformOrigin: '17px 17px' }} />
+            </svg>
+          </div>
+          <div className="brand-text">
+            <h1 className="serif">Solace<span style={{ fontStyle: 'italic', color: 'var(--accent)' }}>.</span></h1>
+            <div className="sub mono">UV · Charleston, SC</div>
+          </div>
+        </div>
+
+        <div className="header-right">
+          {scrolled && (
+            <div className="live-pill fade-up">
+              <span className="live-dot" style={{ background: uvC }} />
+              <span className="mono" style={{ fontSize: 10, letterSpacing: '0.14em' }}>UV {currentUV.toFixed(1)}</span>
+              <span className="mono" style={{ fontSize: 10, letterSpacing: '0.14em', color: uvC }}>{level}</span>
+            </div>
+          )}
+          <div className="location-text">
+            <div className="city serif">
+              {now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+            </div>
+            <div className="coords mono">
+              <span className="status">
+                <span className="live-dot" style={{ width: 5, height: 5, display: 'inline-block', borderRadius: '50%', background: data.live ? '#4db86a' : '#e4c53e', animation: 'blip 2s ease-in-out infinite' }} />
+                &nbsp;{data.live ? 'Live · Open-Meteo' : 'Simulated'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ── HERO ── */}
+      <section className="hero">
+        <div className="hero-eyebrow">
+          <span>{isLive ? 'Live Reading' : 'Scrubbed View'}</span>
+          <span className="sep">·</span>
+          <span>April 20, 2026</span>
+          <span className="sep">·</span>
+          <span>Charleston</span>
+        </div>
+
+        <div className="hero-tagline serif">
+          Currently <strong style={{ color: uvC }}>{level}</strong> UV exposure{' '}
+          {!isLive && <span style={{ fontSize: 26, fontStyle: 'normal', fontFamily: 'JetBrains Mono, monospace', color: 'var(--ink-3)' }}>· preview</span>}
+        </div>
+
+        <UVWheel
+          hourly={data.hourly}
+          currentHour={currentHour}
+          sunrise={data.sunrise}
+          sunset={data.sunset}
+          motion={tweaks.motion}
+          envMultiplier={envMult}
+          onScrub={setScrubHour}
+          isScrubbing={isScrubbing}
+          setIsScrubbing={setIsScrubbing}
+        />
+
+        {/* Legend */}
+        <div style={{ width: '100%', maxWidth: 640, marginTop: 14 }}>
+          <div className="legend">
+            {[['#4cb8a4'], ['#86c55e'], ['#e4c53e'], ['#f08030'], ['#e04040'], ['#8e32a8']].map(([c], i) => (
+              <div key={i} className="legend-seg" style={{ background: c }} />
+            ))}
+          </div>
+          <div className="legend-labels">
+            <span>0</span><span>Low</span><span>Mod</span><span>High</span><span>V. High</span><span>11+</span>
+          </div>
+        </div>
+
+        {/* Scrub hint / return to now */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+          <div className="hero-hint">
+            <span className="pulse" />
+            Drag the wheel to explore UV through the day
+          </div>
+          {!isLive && (
+            <button className="return-now" onClick={() => setScrubHour(-1)}>
+              <IconClock size={11} /> Return to now
+            </button>
+          )}
+        </div>
+      </section>
+
+      {/* ── ENVIRONMENT SELECTOR ── */}
+      <section className="env-section">
+        <div className="env-section-label label">
+          <IconWave size={11} style={{ display: 'inline', marginRight: 8 }} />
+          Environment · adjusts UV for reflective surfaces
+        </div>
+        <div className="env-pills">
+          {Object.entries(ENVIRONMENTS).map(([k, env]) => {
+            const pct = env.mult === 1 ? '' : env.mult > 1
+              ? ` +${Math.round((env.mult - 1) * 100)}%`
+              : ` ${Math.round((env.mult - 1) * 100)}%`;
+            return (
+              <button key={k} className={`env-pill ${envKey === k ? 'active' : ''}`} onClick={() => setEnvKey(k)}>
+                <EnvIcon k={k} />
+                {env.label}
+                {pct && <span className="pct">{pct}</span>}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* ── SMART ADVISORY ── */}
+      <AdvisoryBanner uv={currentUV} skinType={skinType} envMult={envMult} />
+
+      {/* ── DIVIDER ── */}
+      <div className="section-divider" />
+
+      {/* ── ROW 1: MINI STATS (4 across) ── */}
+      <div className="section-label label"><IconSun size={11} />At a glance</div>
+      <div className="grid-4">
+        <MiniStatCard label="UV Index" value={currentUV.toFixed(1)} icon={<IconSun size={11} />}
+          color={uvC} sub={`${level} · ${isLive ? 'Live' : 'Scrubbed'}`} />
+        <MiniStatCard label="Time to Burn" value={burnMin === Infinity ? '∞' : burnMin} unit="min"
+          icon={<IconAlert size={11} />} sub={`Skin type ${skinType}`}
+          color={burnMin < 20 ? '#e04040' : burnMin < 45 ? '#f08030' : 'var(--ink)'} />
+        <MiniStatCard label="Tan Score" value={score} unit="/100"
+          icon={<IconSparkle size={11} />} sub={scoreLabel_} color={scoreColor} />
+        <MiniStatCard label="Sun Remaining" value={sunRemaining} unit="hrs"
+          icon={<IconSunset size={11} />} sub={`Sunset ${formatTime(data.sunset)}`} />
+      </div>
+
+      {/* ── ROW 2: BEST WINDOWS + SKIN + HOURLY ── */}
+      <div className="section-divider" style={{ margin: '32px 0 24px' }} />
+      <div className="section-label label"><IconLeaf size={11} />Tanning Guide</div>
+      <div className="grid-3">
+
+        <div className="card">
+          <div className="card-label"><IconLeaf size={12} />Best Windows</div>
+          <BestTimes best={best} />
+        </div>
+
+        <div className="card">
+          <SkinTypeSelector skinType={skinType} onChange={setSkinType} />
+          <div style={{ marginTop: 22 }}>
+            <BurnTimer uv={currentUV} skinType={skinType} />
+          </div>
+          <div style={{ marginTop: 22, borderTop: '1px solid var(--line-2)', paddingTop: 20 }}>
+            <TanningScore uv={currentUV} envMult={envMult} />
+          </div>
+        </div>
+
+        <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
+          <VitaminDCard uv={currentUV} hourly={adjHourly} />
+          <div style={{ marginTop: 20, borderTop: '1px solid var(--line-2)', paddingTop: 20 }}>
+            <div className="card-label"><IconShield size={12} />Protection</div>
+            <ProtectionPanel uv={currentUV} skinType={skinType} />
+          </div>
+        </div>
+      </div>
+
+      {/* ── ROW 3: HOURLY FORECAST + SUN ARC + CONDITIONS ── */}
+      <div className="section-divider" style={{ margin: '32px 0 24px' }} />
+      <div className="section-label label"><IconClock size={11} />Today's Forecast</div>
+      <div className="grid-2">
+        <div className="card">
+          <div className="card-label" style={{ justifyContent: 'space-between' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}><IconSun size={12} />Hourly UV</span>
+            <span className="card-label-right mono">Peak · {best.peakValue.toFixed(1)} · {best.peak}</span>
+          </div>
+          <HourlyStrip
+            hourly={adjHourly}
+            cloud={data.cloud}
+            currentHour={currentHour}
+            sunrise={data.sunrise}
+            sunset={data.sunset}
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div className="card">
+            <div className="card-label"><IconClock size={12} />Sun Path · Today</div>
+            <SunArc sunrise={data.sunrise} sunset={data.sunset} now={now} />
+          </div>
+          <div className="card" id="conditions-section">
+            <div className="card-label"><IconPin size={12} />Conditions</div>
+            <Conditions sunrise={data.sunrise} sunset={data.sunset} cloudNow={cloudNow} />
+          </div>
+        </div>
+      </div>
+
+      {/* ── ROW 4: 14-DAY + SMART TIP ── */}
+      <div className="section-divider" style={{ margin: '32px 0 24px' }} />
+      <div className="section-label label"><IconSparkle size={11} />14-Day Outlook</div>
+      <div className="card">
+        <WeekOutlook week={data.week} weekDates={data.weekDates} />
+      </div>
+
+      <div className="tip-card" style={{ marginTop: 20 }}>
+        <div className="tip-label mono">Charleston · Local Knowledge</div>
+        <div className="tip-text serif">
+          "Charleston's latitude puts it at the edge of the subtropical UV envelope — summer peak readings routinely exceed 10.
+          The harbor's open water and white sand beaches can amplify exposure by up to 35%."
+        </div>
+      </div>
+
+      {/* ── TWEAKS PANEL ── */}
+      <div className={`tweaks ${showTweaks ? 'visible' : ''}`}>
+        <h3>Tweaks</h3>
+        <div className="tweak-row">
+          <label>Mode</label>
+          <div className="seg">
+            <button className={tweaks.theme !== 'dusk' ? 'active' : ''} onClick={() => updateTweak('theme', 'solar')}>
+              Solar Mode
+            </button>
+            <button className={tweaks.theme === 'dusk' ? 'active' : ''} onClick={() => updateTweak('theme', 'dusk')}>
+              Dusk Mode
+            </button>
+          </div>
+        </div>
+        <div className="tweak-row">
+          <label>Motion · {tweaks.motion}%</label>
+          <input type="range" min="0" max="100" step="5" value={tweaks.motion}
+                 onChange={e => updateTweak('motion', Number(e.target.value))} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body></html>
