@@ -84,6 +84,7 @@ function UVWheel({ hourly, currentHour, sunrise, sunset, motion = 70, envMultipl
   }
 
   const pointerAngle = uvToCategoryAngle(currentUV);
+  const wheelRotation = -pointerAngle;
 
   // Build curved-text arc paths for each band, always drawn in a direction that keeps text right-side up.
   // For bands whose midpoint is in the top half (angles near 0/360) we draw LEFT->RIGHT along the TOP of the arc.
@@ -198,9 +199,7 @@ function UVWheel({ hourly, currentHour, sunrise, sunset, motion = 70, envMultipl
         </g>
 
         {/* Dashed outer ring */}
-        <g className="spin-slow" style={{transformOrigin: `${cx}px ${cy}px`}}>
-          <circle cx={cx} cy={cy} r={285} fill="none" stroke="var(--ink-2)" strokeWidth="0.5" strokeDasharray="1 8" opacity="0.35" />
-        </g>
+        <circle cx={cx} cy={cy} r={285} fill="none" stroke="var(--ink-2)" strokeWidth="0.5" strokeDasharray="1 8" opacity="0.35" />
 
         {/* Hour ticks outside the colored ring */}
         {Array.from({length: 24}).map((_, i) => {
@@ -224,34 +223,36 @@ function UVWheel({ hourly, currentHour, sunrise, sunset, motion = 70, envMultipl
           );
         })}
 
-        {/* STATIC CATEGORICAL RING — 5 bands with gradients */}
-        {BANDS.map((b, i) => (
-          <path key={i}
-                d={bandPath(b.start, b.end, R_INNER, R_OUTER)}
-                fill={`url(#bandg-${i})`} />
-        ))}
+        {/* Rotating UV band ring only */}
+        <g style={{ transform: `rotate(${wheelRotation}deg)`, transformOrigin: `${cx}px ${cy}px`, transition: isScrubbing ? 'transform 0.15s ease-out' : 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)' }}>
+          {BANDS.map((b, i) => (
+            <path key={i}
+                  d={bandPath(b.start, b.end, R_INNER, R_OUTER)}
+                  fill={`url(#bandg-${i})`} />
+          ))}
 
-        {/* Band divider lines (thin) */}
-        {BANDS.map((b, i) => {
-          const [x0, y0] = polar(b.start, R_INNER);
-          const [x1, y1] = polar(b.start, R_OUTER);
-          return <line key={`div-${i}`} x1={x0} y1={y0} x2={x1} y2={y1}
-                       stroke="rgba(255,255,255,0.55)" strokeWidth="1.2" />;
-        })}
+          {/* Band divider lines (thin) */}
+          {BANDS.map((b, i) => {
+            const [x0, y0] = polar(b.start, R_INNER);
+            const [x1, y1] = polar(b.start, R_OUTER);
+            return <line key={`div-${i}`} x1={x0} y1={y0} x2={x1} y2={y1}
+                         stroke="rgba(255,255,255,0.55)" strokeWidth="1.2" />;
+          })}
 
-        {/* Subtle inner & outer ring borders */}
-        <circle cx={cx} cy={cy} r={R_INNER} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
-        <circle cx={cx} cy={cy} r={R_OUTER} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
+          {/* Subtle inner & outer ring borders */}
+          <circle cx={cx} cy={cy} r={R_INNER} fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1" />
+          <circle cx={cx} cy={cy} r={R_OUTER} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
 
-        {/* Curved band labels */}
-        {BANDS.map((b, i) => (
-          <text key={`lbl-${i}`}
-                style={{fontFamily: 'Inter, sans-serif', fontSize: 15, fontWeight: 700, letterSpacing: '0.18em', fill: 'rgba(255,255,255,0.98)'}}>
-            <textPath href={`#bandpath-${i}`} startOffset="50%" textAnchor="middle">
-              {b.label}
-            </textPath>
-          </text>
-        ))}
+          {/* Curved band labels */}
+          {BANDS.map((b, i) => (
+            <text key={`lbl-${i}`}
+                  style={{fontFamily: 'Inter, sans-serif', fontSize: 15, fontWeight: 700, letterSpacing: '0.18em', fill: 'rgba(255,255,255,0.98)'}}>
+              <textPath href={`#bandpath-${i}`} startOffset="50%" textAnchor="middle">
+                {b.label}
+              </textPath>
+            </text>
+          ))}
+        </g>
 
         {/* Sunrise / Sunset markers — refined badges with hover/click emphasis */}
         {[
@@ -326,18 +327,6 @@ function UVWheel({ hourly, currentHour, sunrise, sunset, motion = 70, envMultipl
           );
         })}
 
-        {/* === CATEGORY POINTER — indicates current UV on the ring === */}
-        <g style={{transform: `rotate(${pointerAngle}deg)`, transformOrigin: `${cx}px ${cy}px`, transition: isScrubbing ? 'transform 0.15s ease-out' : 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)'}}>
-          {/* Inward-pointing triangular notch sitting inside the ring band */}
-          <path d={`M ${cx} ${cy - R_INNER + 4} l -10 -16 l 20 0 z`}
-                fill="white"
-                stroke={uvC}
-                strokeWidth="2"
-                strokeLinejoin="round" />
-          {/* Small accent dot at its tip on the ring */}
-          <circle cx={cx} cy={cy - R_INNER + 4} r="3" fill={uvC} />
-        </g>
-
         {/* === HOUR POINTER on outer edge — shows where "this hour" falls === */}
         <g style={{transform: `rotate(${hourAngle}deg)`, transformOrigin: `${cx}px ${cy}px`, transition: isScrubbing ? 'transform 0.15s ease-out' : 'transform 0.6s ease-out'}}>
           <circle cx={cx} cy={cy - R_OUTER - 14} r="6" fill="var(--ink-0)" />
@@ -351,6 +340,16 @@ function UVWheel({ hourly, currentHour, sunrise, sunset, motion = 70, envMultipl
         {/* Pulsing inner ring */}
         <g style={{transformOrigin: `${cx}px ${cy}px`, animation: `breathe ${breatheDuration} ease-in-out infinite`}}>
           <circle cx={cx} cy={cy} r={R_INNER - 14} fill="none" stroke={uvC} strokeWidth="0.5" opacity="0.35" strokeDasharray="2 4" />
+        </g>
+
+        {/* Fixed north pointer — aligns the wheel under a stationary indicator */}
+        <g>
+          <path d={`M ${cx} ${cy - R_OUTER + 4} l -10 16 l 20 0 z`}
+                fill="white"
+                stroke={uvC}
+                strokeWidth="2"
+                strokeLinejoin="round" />
+          <circle cx={cx} cy={cy - R_OUTER + 4} r="3" fill={uvC} />
         </g>
       </svg>
 
