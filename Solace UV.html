@@ -1226,19 +1226,17 @@ function UVWheel({ hourly, currentHour, sunrise, sunset, motion = 70, envMultipl
                onPointerLeave={() => setActiveMarker(curr => (curr === label ? null : curr))}
                onFocus={() => setActiveMarker(label)}
                onBlur={() => setActiveMarker(curr => (curr === label ? null : curr))}
-               onClick={() => {
-                 setActiveMarker(label);
-                 const el = document.getElementById('conditions-section');
-                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-               }}
-               onKeyDown={(e) => {
-                 if (e.key === 'Enter' || e.key === ' ') {
-                   e.preventDefault();
+                 onClick={() => {
                    setActiveMarker(label);
-                   const el = document.getElementById('conditions-section');
-                   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                 }
-              }}>
+                   onScrub(h);
+                 }}
+                 onKeyDown={(e) => {
+                   if (e.key === 'Enter' || e.key === ' ') {
+                     e.preventDefault();
+                     setActiveMarker(label);
+                     onScrub(h);
+                   }
+                }}>
               <title>{isRise ? 'Sunrise' : 'Sunset'}</title>
 
               <circle cx={x} cy={y} r={isActive ? '18' : '15.5'} fill={glowColor} opacity={isActive ? '0.88' : '0.52'} />
